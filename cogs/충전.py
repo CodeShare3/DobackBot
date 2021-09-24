@@ -61,8 +61,7 @@ class Core(commands.Cog, name="충전"):
                     return None
                 pw_number = 0
                 driver.find_element_by_xpath('//*[@id="passwd"]').click()
-                try:
-                    while True:
+                while True:
                         try:
                             if password[pw_number] == "~" or password[pw_number] == "!" or password[pw_number] == "@" or \
                                     password[pw_number] == "#" or password[pw_number] == "+":
@@ -258,12 +257,11 @@ class Core(commands.Cog, name="충전"):
                                 print(str(ctx.author.id) + "님이 충전을 실패하셨습니다.")
                             else:
                                 cndwjsrmador = cndwjsrmador.split("원")[0]
-                                try:
-                                    cndwjsrmador_fees = int(cndwjsrmador) / 100 * int(fees)
-                                except ValueError:
-                                    cndwjsrmador_1 = cndwjsrmador.split(",")[0]
-                                    cndwjsrmador_2 = cndwjsrmador.split(",")[1]
-                                    cndwjsrmador_fees = int(str(cndwjsrmador_1) + str(cndwjsrmador_2)) / 100 * int(fees)
+                                cndwjsrmador_1 = cndwjsrmador.split(",")[0]
+                                cndwjsrmador_2 = cndwjsrmador.split(",")[1]
+                                cndwjsrmador = int(str(cndwjsrmador_1) + str(cndwjsrmador_2))
+                                cndwjsrmador_fees = int(cndwjsrmador) - (int(cndwjsrmador) * (int(fees) / 100))
+                                cndwjsrmador_fees = cndwjsrmador_fees.split(".")[0]
                                 con = sqlite3.connect("Database.db")
                                 cur = con.cursor()
                                 cur.execute("SELECT * FROM userinfo WHERE id == ?;", (ctx.author.id,))
@@ -273,14 +271,11 @@ class Core(commands.Cog, name="충전"):
                                 cur.execute("UPDATE userinfo SET money = ? WHERE id == ?;",(int(cndwjsrmador_fees) + int(money[1]), ctx.author.id))
                                 con.commit()
                                 embed = discord.Embed(title="충전 성공")
-                                embed.add_field(name="충전 금액", value=str(cndwjsrmador_fees + "원"), inline=False)
-                                embed.add_field(name="잔액", value=str(int(cndwjsrmador_fees) + int(money[1]) + "원"))
+                                embed.add_field(name="충전 금액", value=str(str(cndwjsrmador_fees) + "원"), inline=False)
+                                embed.add_field(name="잔액", value=str(int(cndwjsrmador_fees) + int(money[1])) + "원")
                                 await ctx.author.send(embed=embed)
-                                print(str(ctx.author.id) + "님이 " + cndwjsrmador_fees + "원을 충전하셨습니다.")
+                                print(str(ctx.author.id) + "님이 " + str(cndwjsrmador_fees) + "원을 충전하셨습니다.")
                             break
-                except:
-                    embed = discord.Embed(title="충전 실패", description="일시적인 오류입니다.")
-                    await ctx.author.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Core(bot))
