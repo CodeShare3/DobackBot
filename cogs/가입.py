@@ -17,11 +17,11 @@ class Core(commands.Cog, name="가입"):
         if (user_info == None):
             cur.execute("INSERT INTO userinfo VALUES(?, ?, ?);", (ctx.author.id, 0, 0))
             con.commit()
-            embed = discord.Embed(title="가입 성공", description=f"가입에 성공하셨습니다.", color=0x000000)
+            embed = discord.Embed(title="가입 성공", description=f"가입에 성공하셨습니다.")
             await ctx.send(embed=embed)
             print(str(ctx.author.id) + "님이 가입하셨습니다.")
         else:
-            embed = discord.Embed(title="가입 실패", description=f"이미 가입된 유저입니다.", color=0x000000)
+            embed = discord.Embed(title="가입 실패", description=f"이미 가입된 유저입니다.")
             await ctx.send(embed=embed)
 
 def setup(bot):
